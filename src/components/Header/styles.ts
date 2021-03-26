@@ -6,6 +6,10 @@ interface INav {
 
 export const Container = styled.div`
   background: #fff;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1;
 
   @media print {
     display: none;
@@ -19,7 +23,6 @@ export const Nav = styled.nav<INav>`
   display: flex;
   align-items: center;
   width: 100vw;
-  z-index: 1;
 
   aside {
     margin-left: auto;

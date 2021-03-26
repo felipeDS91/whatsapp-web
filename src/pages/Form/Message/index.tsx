@@ -45,7 +45,7 @@ const FormMessage: React.FC<Props> = ({ onSendMessage }) => {
       }));
       setSenders(formattedData);
     } catch (error) {
-      ToastError('Não foi possivel carrgear os remetentes');
+      ToastError('Não foi possivel carregar os remetentes');
     }
     setLoading(false);
   }, []);

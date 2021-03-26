@@ -1,12 +1,16 @@
 import { darken, shade } from 'polished';
 import styled from 'styled-components';
 
-interface DeleteButtonProps {
+interface CardProps {
+  checked?: boolean;
+}
+
+interface ButtonProps {
   disabled?: boolean;
 }
 
 export const Container = styled.div`
-  height: 100vh;
+  height: 100%;
   max-width: 800px;
   margin: auto;
   display: flex;
@@ -37,7 +41,6 @@ export const SearchButton = styled.button`
   justify-content: space-between;
   align-items: center;
   border: 0;
-  border-radius: 4px;
   background: #444;
   font-size: 12px;
   color: #fff;
@@ -45,6 +48,7 @@ export const SearchButton = styled.button`
   margin-left: 12px;
   align-self: flex-end;
   height: 48px;
+  border-radius: 4px 0 0 4px;
 
   &:hover {
     background: ${darken(0.08, '#444')};
@@ -55,11 +59,57 @@ export const SearchButton = styled.button`
   }
 `;
 
-export const DeleteButton = styled.button<DeleteButtonProps>`
+export const OptionsButton = styled.button.attrs(_ => ({
+  type: 'button',
+}))`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 0;
+  background: #444;
+  color: #fff;
+  padding: 10px;
+  align-self: flex-end;
+  height: 48px;
+  border-radius: 0 4px 4px 0;
+  border-left: 1px solid;
+
+  &:hover {
+    background: ${darken(0.08, '#444')};
+  }
+`;
+
+export const OptionsItem = styled.button.attrs(_ => ({
+  type: 'button',
+}))<ButtonProps>`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 0;
+  font-size: 14px;
+  color: #444;
+  padding: 10px;
+  align-self: flex-end;
+  margin: 1px 0 1px 0;
+  width: 100%;
+  height: 48px;
+  cursor: ${props => (props.disabled ? 'not-allowed' : 'pointer')};
+
+  svg {
+    margin: 0 6px;
+  }
+
+  &:hover {
+    background: ${props => !props.disabled && darken(0.08, '#F0F0F0')};
+  }
+`;
+
+export const DeleteButton = styled.button<ButtonProps>`
   border-radius: 4px;
   height: 24px;
   width: 100px;
   margin-left: auto;
+  margin-top: 12px;
   font-weight: 500;
   transition: background-color 0.2s;
   display: flex;
@@ -82,11 +132,10 @@ export const DeleteButton = styled.button<DeleteButtonProps>`
   @media (max-width: 769px) {
     width: 100%;
     margin-left: 0px;
-    margin-top: 12px;
   }
 `;
 
-export const Card = styled.div`
+export const Card = styled.div<CardProps>`
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -94,7 +143,15 @@ export const Card = styled.div`
   padding: 18px;
   background: #fff;
   border-radius: 4px;
-  box-shadow: rgba(0, 0, 0, 0.3) 0 0 10px;
+  box-shadow: ${props =>
+      props.checked ? 'rgba(0, 0, 0)' : 'rgba(0, 0, 0, 0.3)'}
+    0 0 10px;
+
+  cursor: pointer;
+
+  &:hover {
+    background: ${darken(0.1, '#fff')};
+  }
 
   @media (max-width: 769px) {
     flex-direction: column;
@@ -133,7 +190,6 @@ export const Row = styled.div`
 
 export const Column = styled.div<{ width?: string }>`
   display: flex;
-  position: relative;
   flex-direction: column;
   align-self: center;
   width: ${props => (props.width ? props.width : '100%')};

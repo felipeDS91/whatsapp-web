@@ -6,5 +6,6 @@ export const Wrapper = styled.div`
 `;
 
 export const Body = styled.div`
+  margin-top: 64px;
   padding: 20px;
 `;

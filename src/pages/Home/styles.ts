@@ -6,7 +6,7 @@ interface DeleteButtonProps {
 }
 
 export const Container = styled.div`
-  height: 100vh;
+  height: 100%;
   max-width: 800px;
   margin: auto;
   display: flex;
@@ -86,7 +86,6 @@ export const Row = styled.div`
 
 export const Column = styled.div<{ width?: string }>`
   display: flex;
-  position: relative;
   flex-direction: column;
   align-self: center;
   width: ${props => (props.width ? props.width : '100%')};

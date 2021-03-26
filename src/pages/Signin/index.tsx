@@ -37,7 +37,7 @@ const SignIn: React.FC = () => {
         history.push('/home');
       } catch ({ response }) {
         ToastError(
-          'Falha na autenticação. Verifique seus dados e tente novamente',
+          'Falha na autenticação.\nVerifique seus dados e tente novamente.',
         );
       }
       setIsLoading(false);
