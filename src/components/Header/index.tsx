@@ -34,6 +34,11 @@ const Header: React.FC = () => {
               MENSAGENS
             </NavLink>
           </li>
+          <li>
+            <NavLink to="/contacts" onClick={() => setToggle(!toggle)}>
+              CONTATOS
+            </NavLink>
+          </li>
         </ul>
 
         <aside>

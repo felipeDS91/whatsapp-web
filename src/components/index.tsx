@@ -8,3 +8,4 @@ export { default as Textarea } from './Textarea';
 export { default as DatePicker } from './DatePicker';
 export { default as Modal } from './Modal';
 export { default as Pagination } from './Pagination';
+export { default as Checkbox } from './Checkbox';
