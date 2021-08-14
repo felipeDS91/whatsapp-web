@@ -5,7 +5,6 @@ import { Container, Content, SendButton } from './styles';
 import api from '../../../services/api';
 import { Loading } from '../../../components/Loading';
 import { formatPhoneNumber } from '../../../utils/format';
-import { isValidPhoneNumber } from '../../../utils/validate';
 import { ToastError, ToastSuccess } from '../../../components/Message';
 import { DatePicker, Form, Input, Select, Textarea } from '../../../components';
 
@@ -18,15 +17,6 @@ export interface ISelect {
   label: string;
 }
 
-const schema = Yup.object().shape({
-  from: Yup.string().required('Remetente requerido'),
-  to: Yup.string()
-    .test('to', 'Número inválido', value => isValidPhoneNumber(String(value)))
-    .required('Destinatário requerido'),
-  message: Yup.string().required('Mensagem requerida'),
-  schedule_date: Yup.date().min(new Date(), 'Data de inicio inválida'),
-});
-
 interface Props {
   onSendMessage: () => void;
 }
@@ -34,6 +24,23 @@ interface Props {
 const FormMessage: React.FC<Props> = ({ onSendMessage }) => {
   const [loading, setLoading] = useState(false);
   const [senders, setSenders] = useState<ISelect[]>([]);
+
+  const schema = Yup.object().shape({
+    from: Yup.string().required('Remetente requerido'),
+    to: Yup.string()
+      .test('to', 'Número inválido', value => {
+        const phoneLenght = sanitizePhoneNumber(value || '').length;
+        return phoneLenght === 11 || phoneLenght === 22;
+      })
+      .required('Destinatário requerido'),
+    message: Yup.string().required('Mensagem requerida'),
+    schedule_date: Yup.date().min(new Date(), 'Data de inicio inválida'),
+  });
+
+  const sanitizePhoneNumber = useCallback((number: string) => {
+    const result = number.replaceAll('_', '');
+    return result.length <= 12 ? result.replace('-', '') : result;
+  }, []);
 
   const loadSenders = useCallback(async () => {
     setLoading(true);
@@ -53,8 +60,10 @@ const FormMessage: React.FC<Props> = ({ onSendMessage }) => {
   const handleSubmit = useCallback(
     async data => {
       setLoading(true);
+
       try {
-        await api.post('/messages', data);
+        const to = sanitizePhoneNumber(data.to);
+        await api.post('/messages', { ...data, to });
         ToastSuccess('Mensagem encaminhada com sucesso!');
         onSendMessage();
       } catch ({ response }) {
@@ -65,7 +74,7 @@ const FormMessage: React.FC<Props> = ({ onSendMessage }) => {
 
       setLoading(false);
     },
-    [onSendMessage],
+    [onSendMessage, sanitizePhoneNumber],
   );
 
   useEffect(() => {
@@ -82,11 +91,12 @@ const FormMessage: React.FC<Props> = ({ onSendMessage }) => {
             placeholder="Selecione o remetente"
             options={senders}
           />
+
           <Input
             name="to"
             label="Destinatário"
             placeholder="Digite destinatário"
-            mask="99999999999"
+            mask="99999999999-9999999999"
           />
 
           <DatePicker
