@@ -64,7 +64,12 @@ const ListContacts: React.FC = () => {
         params: { onlyGroup },
       });
 
-      setContacts(data.contacts);
+      const formattedContacts = data.contacts.map((contact: IContact) => ({
+        ...contact,
+        id: contact.id.substr(2, contact.id.length),
+      }));
+
+      setContacts(formattedContacts);
     } catch (error) {
       ToastError('Não foi possivel carregar os dados');
       setContacts([]);
