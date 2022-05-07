@@ -24,6 +24,7 @@ import {
   ToastError,
   ToastSuccess,
 } from '../../components/Message';
+import { isValidPhoneNumber } from '../../utils/validate';
 
 interface IToken {
   id: string;
@@ -59,25 +60,48 @@ const Home: React.FC = () => {
   const loadQrCode = useCallback(async () => {
     setLoading(true);
     try {
-      const { data } = await api.post(
-        '/tokens',
-        {},
-        { responseType: 'arraybuffer' },
-      );
-
-      const base64Data = btoa(
-        new Uint8Array(data).reduce((dataArray, byte) => {
-          return dataArray + String.fromCharCode(byte);
-        }, ''),
-      );
-
-      const image = `data:image/png;base64,${base64Data}`;
-
       ShowMessage({
-        title: 'QR CODE',
-        text: 'Abra seu whatsapp para escanear',
-        imageUrl: image,
-        imageAlt: 'Qr Code',
+        text: 'Digite o número que deseja cadastrar',
+        input: 'tel',
+        inputAttributes: {
+          autocapitalize: 'off',
+        },
+        showCancelButton: true,
+        confirmButtonText: 'Gerar',
+        cancelButtonText: 'Cancelar',
+        showLoaderOnConfirm: true,
+        preConfirm: async number => {
+          const validNumber = isValidPhoneNumber(number);
+          if (!validNumber) {
+            ShowMessage({
+              title: 'Número inválido',
+            });
+            return;
+          }
+
+          const cleanedPhoneNumber = number.replace(/\D/g, '');
+
+          const { data } = await api.post(
+            '/tokens',
+            { from: cleanedPhoneNumber },
+            { responseType: 'arraybuffer' },
+          );
+
+          const base64Data = btoa(
+            new Uint8Array(data).reduce((dataArray, byte) => {
+              return dataArray + String.fromCharCode(byte);
+            }, ''),
+          );
+
+          const image = `data:image/png;base64,${base64Data}`;
+
+          ShowMessage({
+            title: 'QR CODE',
+            text: 'Abra seu whatsapp para escanear',
+            imageUrl: image,
+            imageAlt: 'Qr Code',
+          });
+        },
       });
     } catch (error) {
       ToastError('Não foi possivel gerar o qrcode');

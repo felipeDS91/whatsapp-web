@@ -27,6 +27,7 @@ export async function ShowMessage(
 
     return Swal.fire({
       ...params,
+      allowOutsideClick: () => !Swal.isLoading(),
       onBeforeOpen: () => {
         Swal.disableButtons();
       },
