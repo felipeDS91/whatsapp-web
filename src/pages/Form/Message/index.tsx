@@ -24,13 +24,14 @@ interface Props {
 const FormMessage: React.FC<Props> = ({ onSendMessage }) => {
   const [loading, setLoading] = useState(false);
   const [senders, setSenders] = useState<ISelect[]>([]);
+  const VALID_NUMBER_SIZE = [11, 22, 16, 18];
 
   const schema = Yup.object().shape({
     from: Yup.string().required('Remetente requerido'),
     to: Yup.string()
       .test('to', 'Número inválido', value => {
         const phoneLenght = sanitizePhoneNumber(value || '').length;
-        return phoneLenght === 11 || phoneLenght === 22;
+        return VALID_NUMBER_SIZE.includes(phoneLenght);
       })
       .required('Destinatário requerido'),
     message: Yup.string().required('Mensagem requerida'),
