@@ -39,8 +39,7 @@ const FormMessage: React.FC<Props> = ({ onSendMessage }) => {
   });
 
   const sanitizePhoneNumber = useCallback((number: string) => {
-    const result = number.replaceAll('_', '');
-    return result.length <= 12 ? result.replace('-', '') : result;
+    return number.replaceAll('_', '');
   }, []);
 
   const loadSenders = useCallback(async () => {
@@ -97,7 +96,7 @@ const FormMessage: React.FC<Props> = ({ onSendMessage }) => {
             name="to"
             label="Destinatário"
             placeholder="Digite destinatário"
-            mask="99999999999-9999999999"
+            mask="999999999999999999999"
           />
 
           <DatePicker
